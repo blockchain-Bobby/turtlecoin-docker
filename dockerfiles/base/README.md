@@ -2,14 +2,11 @@
 
 This image compiles all TurtleCoin binaries and is meant to be a starting point to build from. We first use Alpine to compile the binaries then, to minimize the final image, copy them to a Scratch image. This image currently only works with the development branch.
 
-Build Arguments/Environment Variables:
+## Table of Contents
+1. [Examples](#examples)
+2. [Build Args/Env Variables](#build-arguments-and-environment-variables)
 
-| Name | Default | Function |
-| --- | --- | --- |
-| BRANCH | development | Sets the git branch to build from |
-| ENABLE_SSL | false | Whether or not to build with ssl support |
-
-Build Examples:
+## Examples:
 ```
 docker build -t turtlecoin-base .
 docker build --build-arg BRANCH=development -t turtlecoin-base .
@@ -25,8 +22,15 @@ FROM alpine
 COPY --from=base /zedwallet /my/location
 ```
 
-This image is also hosted on [Docker Hub](https://cloud.docker.com/u/andrewnk/repository/docker/andrewnk/turtlecoin). To copy from the Docker Hub image:
+This image is also hosted on [Docker Hub](https://hub.docker.com/r/andrewnk/turtlecoin). To copy from the Docker Hub image:
 
 ```
 FROM andrewnk/turtlecoin:base as base
 ```
+
+## Build Arguments and Environment Variables:
+
+| Name | Default | Function |
+| --- | --- | --- |
+| BRANCH | development | Sets the git branch to build from |
+| ENABLE_SSL | false | Whether or not to build with ssl support |

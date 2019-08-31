@@ -2,17 +2,14 @@
 
 This image pulls the binary from the base image and runs zedwallet on apline.
 
-Build Arguments/Environment Variables:
+## Table of Contents
+1. [Examples](#examples)
+2. [Build Args/Env Variables](#build-arguments-and-environment-variables)
 
-| Name | Function |
-| --- | --- |
-| REMOTE_DAEMON_HOST | If using a remote node, used to set the remote node host |
-| REMOTE_DAEMON_PORT | If using a remote node, used to set the remote node port |
-
-Examples:
+## Examples:
 ```
 docker build -t zedwallet .
-docker run -it zedwallet
+docker run -it --name zedwallet zedwallet
 ```
 
 Using a remote node
@@ -41,8 +38,23 @@ docker build -t turtlecoind .
 docker run -d --name zedwallet -v ${PWD}/zedwallet:/home/turtlecoin/ zedwallet
 ```
 
-This image is also hosted on [Docker Hub](https://cloud.docker.com/u/andrewnk/repository/docker/andrewnk/turtlecoin). To use from the Docker Hub image:
+This image is also hosted on [Docker Hub](https://hub.docker.com/r/andrewnk/turtlecoin).
+
+To run from the Docker Hub image:
+
+```
+docker run -d --name zedwallet andrewnk/turtlecoin:zedwallet
+```
+
+To use from the Docker Hub image:
 
 ```
 FROM andrewnk/turtlecoin:zedwallet as zedwallet
 ```
+
+## Build Arguments and Environment Variables:
+
+| Name | Function |
+| --- | --- |
+| REMOTE_DAEMON_HOST | If using a remote node, used to set the remote node host |
+| REMOTE_DAEMON_PORT | If using a remote node, used to set the remote node port |

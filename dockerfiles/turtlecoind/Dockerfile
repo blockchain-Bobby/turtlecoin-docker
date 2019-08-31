@@ -25,6 +25,10 @@ ENV ADD_PRIORITY_NODE=${ADD_PRIORITY_NODE}
 ARG ALLOW_LOCAL_IP=false
 ENV ALLOW_LOCAL_IP=${ALLOW_LOCAL_IP}
 
+# Enable lz4 compression
+ARG DB_ENABLE_COMPRESSION=true
+ENV DB_ENABLE_COMPRESSION=${DB_ENABLE_COMPRESSION}
+
 # Number of files that can be used by the database at one time
 ARG DB_MAX_OPEN_FILES=100
 ENV DB_MAX_OPEN_FILES=${DB_MAX_OPEN_FILES}
@@ -61,13 +65,17 @@ ENV FEE_AMOUNT=${FEE_AMOUNT}
 ARG HIDE_MY_PORT=false
 ENV HIDE_MY_PORT=${HIDE_MY_PORT}
 
-# Checkpoints URL
-ARG CHECKPOINTS_URL=https://github.com/turtlecoin/checkpoints/raw/master/checkpoints.csv
-ENV CHECKPOINTS_URL=${CHECKPOINTS_URL}
-
-# Specify a file <path> containing a CSV of Blockchain checkpoints for faster sync. A value of 'default' uses the built-in checkpoints.
-ARG LOAD_CHECKPOINTS=/home/turtlecoin/checkpoints.csv
+# Whether or not to load the daemon with checkpoints
+ARG LOAD_CHECKPOINTS=true
 ENV LOAD_CHECKPOINTS=${LOAD_CHECKPOINTS}
+
+# The checkpoints file location
+ARG CHECKPOINTS_LOCATION=/home/turtlecoin/
+ENV CHECKPOINTS_LOCATION=${CHECKPOINTS_LOCATION}
+
+# The checkpoints file name
+ARG CHECKPOINTS_FILE=checkpoints.csv
+ENV CHECKPOINTS_FILE=${CHECKPOINTS_FILE}
 
 # Specify the <path> to the log file
 ARG LOG_FILE=/home/turtlecoin/logs/TurtleCoind.log
@@ -101,20 +109,17 @@ ENV RPC_BIND_PORT=${RPC_BIND_PORT}
 COPY --from=base /TurtleCoind /usr/local/bin
 
 # add library required to run binary and fix ownership
-RUN apk add --no-cache --virtual wget-dependency wget && \
-    apk add --no-cache libucontext-dev && \
-    wget -O ${LOAD_CHECKPOINTS} ${CHECKPOINTS_URL} && \
-    chown -R turtlecoin:turtlecoin /home/turtlecoin ${LOAD_CHECKPOINTS} && \
-    apk del wget-dependency
+RUN apk add --no-cache libucontext-dev
 
 VOLUME /home/turtlecoin
 WORKDIR /home/turtlecoin
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
 
-RUN chmod 777 /usr/local/bin/docker-entrypoint.sh && \
-    ln -s /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE ${RPC_BIND_PORT} ${P2P_BIND_PORT}
+
+CMD ["TurtleCoind"]
